@@ -2,6 +2,7 @@
 version: '3'
 services:
     laravel.test:
+        container_name: web-multitenant
         build:
             context: ./vendor/laravel/sail/runtimes/8.1
             dockerfile: Dockerfile
@@ -26,7 +27,9 @@ services:
             - redis
             - meilisearch
             - selenium
+
     mysql:
+        container_name: mysql-multitenant
         image: 'mysql/mysql-server:8.0'
         ports:
             - '${FORWARD_DB_PORT:-3306}:3306'
@@ -46,7 +49,9 @@ services:
             test: ["CMD", "mysqladmin", "ping", "-p${DB_PASSWORD}"]
             retries: 3
             timeout: 5s
+
     redis:
+        container_name: redis-multitenant
         image: 'redis:alpine'
         ports:
             - '${FORWARD_REDIS_PORT:-6379}:6379'
@@ -58,7 +63,9 @@ services:
             test: ["CMD", "redis-cli", "ping"]
             retries: 3
             timeout: 5s
+
     meilisearch:
+        container_name: meili-multitenant
         image: 'getmeili/meilisearch:latest'
         ports:
             - '${FORWARD_MEILISEARCH_PORT:-7700}:7700'
@@ -70,7 +77,9 @@ services:
             test: ["CMD", "wget", "--no-verbose", "--spider",  "http://localhost:7700/health"]
             retries: 3
             timeout: 5s
+
     mailhog:
+        container_name: mail-multitenant
         image: 'mailhog/mailhog:latest'
         ports:
             - '${FORWARD_MAILHOG_PORT:-1025}:1025'
@@ -83,9 +92,11 @@ services:
             - '/dev/shm:/dev/shm'
         networks:
             - sail
+
 networks:
     sail:
         driver: bridge
+
 volumes:
     sail-mysql:
         driver: local
